@@ -13,16 +13,17 @@ const app: Express = express()
 const port = process.env.PORT
 
 app.use(express.json())
-const corsOptions = {
-  origin: [
-    'http://localhost:3000',
-    'http://127.0.0.1:5500',
-    'http://127.0.0.1:5501',
-  ], // Izinkan asal ini
-  optionsSuccessStatus: 200,
-}
 
-app.use(cors(corsOptions))
+// const corsOptions = {
+//   origin: [
+//     'http://localhost:3000',
+//     'http://127.0.0.1:5500',
+//     'http://127.0.0.1:5501',
+//   ], // Izinkan asal ini
+//   optionsSuccessStatus: 200,
+// }
+
+// app.use(cors(corsOptions))
 
 app.use('/api/alternatif', RouterAlternatif)
 app.use('/api/kriteria', RouterKriteria)
