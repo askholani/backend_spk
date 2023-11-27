@@ -1,0 +1,34 @@
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+// mengakses basis data melalui Prisma.
+generator client {
+  provider = "prisma-client-js"
+}
+
+model alternatif {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  nama      String
+}
+
+model kriteria {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  nama     String
+  bobot Int
+  jenis Boolean
+}
+
+model matrix {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  id_kriteria String
+  id_alternatif String
+  nilai Int
+}
+
+model rentang_skor_kriteria {
+  id        String @id @default(auto()) @map("_id") @db.ObjectId
+  id_kriteria  String
+  rentang_skor Json
+}
