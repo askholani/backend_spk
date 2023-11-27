@@ -30,7 +30,8 @@ app.use('/api/health', (req: Request, res: Response, next: NextFunction) => {
   res.status(200).send({ status: '200' })
 })
 
-// app.use('/api/alternatif', RouterAlternatif)
+app.use('/api/alternatif', RouterAlternatif)
+
 // app.use('/api/kriteria', RouterKriteria)
 // app.use('/api/rentang', RouterRentangSkor)
 // app.use('/api/matrix', RouteMatrix)
