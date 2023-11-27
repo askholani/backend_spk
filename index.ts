@@ -1,3 +1,4 @@
+import { Request, Response } from 'express-serve-static-core'
 import express, { Express } from 'express'
 import dotenv from 'dotenv'
 import RouterAlternatif from './api/routes/alternatif'
@@ -34,4 +35,7 @@ app.use('/api/result', RouterResult)
 //   console.log(`⚡️[server]: Server is running at http://localhost:${port}`)
 // })
 
-export default app
+// export default app
+export default (req: Request, res: Response) => {
+  return app(req, res)
+}
