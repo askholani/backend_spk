@@ -30,8 +30,8 @@ app.use('/api/rentang', RouterRentangSkor)
 app.use('/api/matrix', RouteMatrix)
 app.use('/api/result', RouterResult)
 
-app.listen(port, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${port}`)
-})
+// app.listen(port, () => {
+//   console.log(`⚡️[server]: Server is running at http://localhost:${port}`)
+// })
 
 export default app
