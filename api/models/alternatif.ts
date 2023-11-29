@@ -16,4 +16,8 @@ export const ModelAlternatif = {
   delete: async (id: string) => {
     return await prisma.alternatif.delete({ where: { id } })
   },
+
+  deleteMany: async () => {
+    return await prisma.alternatif.deleteMany()
+  },
 }

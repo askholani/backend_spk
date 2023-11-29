@@ -49,4 +49,21 @@ export const ControllerAlternatif = {
       res.status(500).json({ message: error })
     }
   },
+
+  deleteMany: async (req: any, res: any) => {
+    try {
+      const kriterias = await ModelAlternatif.findAll()
+      async function deleteKrteria() {
+        for (const item of kriterias) {
+          await ModelMatrix.deleteByKriteria(item.id)
+        }
+      }
+      deleteKrteria()
+      await ModelAlternatif.deleteMany()
+
+      res.status(200).json({ message: 'Data Deleted' })
+    } catch (error) {
+      res.status(500).json({ message: 'Server Error' })
+    }
+  },
 }

@@ -7,6 +7,7 @@ RouterAlternatif.post('/', ControllerAlternatif.create)
 RouterAlternatif.get('/', ControllerAlternatif.findAll)
 RouterAlternatif.get('/:id', ControllerAlternatif.findById)
 RouterAlternatif.put('/:id', ControllerAlternatif.update)
+RouterAlternatif.delete('/delete', ControllerAlternatif.deleteMany)
 RouterAlternatif.delete('/:id', ControllerAlternatif.delete)
 
 export default RouterAlternatif
