@@ -61,4 +61,22 @@ exports.ControllerAlternatif = {
             res.status(500).json({ message: error });
         }
     }),
+    deleteMany: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const kriterias = yield alternatif_1.ModelAlternatif.findAll();
+            function deleteAlternatif() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    for (const item of kriterias) {
+                        yield matrix_1.ModelMatrix.deleteByAlternatif(item.id);
+                    }
+                });
+            }
+            deleteAlternatif();
+            yield alternatif_1.ModelAlternatif.deleteMany();
+            res.status(200).json({ message: 'Data Deleted' });
+        }
+        catch (error) {
+            res.status(500).json({ message: 'Server Error' });
+        }
+    }),
 };

@@ -27,4 +27,7 @@ exports.ModelAlternatif = {
     delete: (id) => __awaiter(void 0, void 0, void 0, function* () {
         return yield db_1.prisma.alternatif.delete({ where: { id } });
     }),
+    deleteMany: () => __awaiter(void 0, void 0, void 0, function* () {
+        return yield db_1.prisma.alternatif.deleteMany();
+    }),
 };

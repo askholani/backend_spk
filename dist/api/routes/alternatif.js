@@ -10,5 +10,6 @@ RouterAlternatif.post('/', alternatif_1.ControllerAlternatif.create);
 RouterAlternatif.get('/', alternatif_1.ControllerAlternatif.findAll);
 RouterAlternatif.get('/:id', alternatif_1.ControllerAlternatif.findById);
 RouterAlternatif.put('/:id', alternatif_1.ControllerAlternatif.update);
+RouterAlternatif.delete('/delete', alternatif_1.ControllerAlternatif.deleteMany);
 RouterAlternatif.delete('/:id', alternatif_1.ControllerAlternatif.delete);
 exports.default = RouterAlternatif;
