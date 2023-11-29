@@ -75,4 +75,25 @@ export const ControllerMatrix = {
       res.status(500).json({ message: error })
     }
   },
+
+  updateByIdKriteriaIdAlternatif: async (req: any, res: any) => {
+    try {
+      const { id_alternatif, id_kriteria, nilai } = req.body
+      const matrix: any = await ModelMatrix.findByKriteriaAlternatif(
+        id_alternatif,
+        id_kriteria,
+      )
+      const { id } = matrix
+      const data = {
+        id_alternatif: id_alternatif,
+        id_kriteria: id_kriteria,
+        nilai: parseInt(nilai),
+      }
+
+      const result = await ModelMatrix.update(id, data)
+      res.status(200).json(result)
+    } catch (error) {
+      console.log(error)
+    }
+  },
 }

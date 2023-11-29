@@ -20,6 +20,7 @@ const corsOptions = {
         'http://localhost:3000',
         'http://127.0.0.1:5500',
         'http://127.0.0.1:5501',
+        'http://127.0.0.1:3000',
     ],
     optionsSuccessStatus: 200,
 };
@@ -32,3 +33,7 @@ app.use('/api/result', result_1.default);
 app.listen(port, () => {
     console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
 });
+// export default app
+// export default (req: Request, res: Response) => {
+//   return app(req, res)
+// }

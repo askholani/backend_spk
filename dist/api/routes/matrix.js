@@ -10,5 +10,6 @@ RouteMatrix.post('/', matrix_1.ControllerMatrix.create);
 RouteMatrix.get('/', matrix_1.ControllerMatrix.findAll);
 RouteMatrix.get('/:id', matrix_1.ControllerMatrix.findById);
 RouteMatrix.put('/:id', matrix_1.ControllerMatrix.update);
+RouteMatrix.post('/edit', matrix_1.ControllerMatrix.updateByIdKriteriaIdAlternatif);
 RouteMatrix.delete('/:id', matrix_1.ControllerMatrix.delete);
 exports.default = RouteMatrix;

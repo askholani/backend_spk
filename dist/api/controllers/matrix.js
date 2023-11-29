@@ -76,4 +76,21 @@ exports.ControllerMatrix = {
             res.status(500).json({ message: error });
         }
     }),
+    updateByIdKriteriaIdAlternatif: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const { id_alternatif, id_kriteria, nilai } = req.body;
+            const matrix = yield matrix_1.ModelMatrix.findByKriteriaAlternatif(id_alternatif, id_kriteria);
+            const { id } = matrix;
+            const data = {
+                id_alternatif: id_alternatif,
+                id_kriteria: id_kriteria,
+                nilai: parseInt(nilai),
+            };
+            const result = yield matrix_1.ModelMatrix.update(id, data);
+            res.status(200).json(result);
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }),
 };
