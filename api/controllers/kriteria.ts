@@ -54,8 +54,26 @@ export const ControllerKriteria = {
 
   delete: async (req: any, res: any) => {
     try {
+      console.log('haiilllow')
       await ModelKriteria.delete(req.params.id)
       await ModelMatrix.deleteByKriteria(req.params.id)
+
+      res.status(200).json({ message: 'Data Deleted' })
+    } catch (error) {
+      res.status(500).json({ message: 'Server Error' })
+    }
+  },
+
+  deleteMany: async (req: any, res: any) => {
+    try {
+      const kriterias = await ModelKriteria.findAll()
+      async function deleteKrteria() {
+        for (const item of kriterias) {
+          await ModelMatrix.deleteByKriteria(item.id)
+        }
+      }
+      deleteKrteria()
+      await ModelKriteria.deleteMany()
 
       res.status(200).json({ message: 'Data Deleted' })
     } catch (error) {

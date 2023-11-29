@@ -16,4 +16,8 @@ export const ModelKriteria = {
   delete: async (id: string) => {
     return await prisma.kriteria.delete({ where: { id } })
   },
+
+  deleteMany: async () => {
+    return await prisma.kriteria.deleteMany()
+  },
 }

@@ -27,4 +27,7 @@ exports.ModelKriteria = {
     delete: (id) => __awaiter(void 0, void 0, void 0, function* () {
         return yield db_1.prisma.kriteria.delete({ where: { id } });
     }),
+    deleteMany: () => __awaiter(void 0, void 0, void 0, function* () {
+        return yield db_1.prisma.kriteria.deleteMany();
+    }),
 };

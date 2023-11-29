@@ -63,8 +63,27 @@ exports.ControllerKriteria = {
     }),
     delete: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
+            console.log('haiilllow');
             yield ktriteria_1.ModelKriteria.delete(req.params.id);
             yield matrix_1.ModelMatrix.deleteByKriteria(req.params.id);
+            res.status(200).json({ message: 'Data Deleted' });
+        }
+        catch (error) {
+            res.status(500).json({ message: 'Server Error' });
+        }
+    }),
+    deleteMany: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+        try {
+            const kriterias = yield ktriteria_1.ModelKriteria.findAll();
+            function deleteKrteria() {
+                return __awaiter(this, void 0, void 0, function* () {
+                    for (const item of kriterias) {
+                        yield matrix_1.ModelMatrix.deleteByKriteria(item.id);
+                    }
+                });
+            }
+            deleteKrteria();
+            yield ktriteria_1.ModelKriteria.deleteMany();
             res.status(200).json({ message: 'Data Deleted' });
         }
         catch (error) {
