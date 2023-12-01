@@ -18,10 +18,11 @@ exports.ControllerMatrix = {
     create: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { id_alternatif, id_kriteria, nilai } = req.body;
+            console.log('req.body', req.body);
             const data = {
                 id_alternatif,
                 id_kriteria,
-                nilai: parseInt(nilai),
+                nilai,
             };
             const matrix = yield matrix_1.ModelMatrix.findByKriteriaAlternatif(id_alternatif, id_kriteria);
             if (matrix) {
@@ -42,7 +43,6 @@ exports.ControllerMatrix = {
             const kriteria = yield ktriteria_1.ModelKriteria.findAll();
             const alternatif = yield alternatif_1.ModelAlternatif.findAll();
             const result = (0, helpers_1.groupByAlternatif)(matrix, kriteria, alternatif);
-            // console.log('matrix', matrix)
             res.status(200).json(result);
         }
         catch (error) {
@@ -84,8 +84,9 @@ exports.ControllerMatrix = {
             const data = {
                 id_alternatif: id_alternatif,
                 id_kriteria: id_kriteria,
-                nilai: parseInt(nilai),
+                nilai,
             };
+            console.log('data', data);
             const result = yield matrix_1.ModelMatrix.update(id, data);
             res.status(200).json(result);
         }

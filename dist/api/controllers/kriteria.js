@@ -17,7 +17,7 @@ exports.ControllerKriteria = {
         const { nama, bobot, jenis } = req.body;
         const data = {
             nama,
-            bobot: JSON.parse(bobot),
+            bobot,
             jenis: jenis === 'benefit' ? true : false,
         };
         try {
@@ -49,11 +49,13 @@ exports.ControllerKriteria = {
     update: (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         try {
             const { jenis, bobot, nama } = req.body;
+            console.log('req.body', req.body);
             const value = {
                 nama,
                 jenis: jenis === 'benefit' ? true : false,
-                bobot: parseInt(bobot),
+                bobot,
             };
+            console.log('value', value);
             const result = yield ktriteria_1.ModelKriteria.update(req.params.id, value);
             res.status(200).json(result);
         }

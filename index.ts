@@ -1,4 +1,3 @@
-import { Request, Response } from 'express-serve-static-core'
 import express, { Express } from 'express'
 import dotenv from 'dotenv'
 import RouterAlternatif from './api/routes/alternatif'

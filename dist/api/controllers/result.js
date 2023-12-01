@@ -19,7 +19,10 @@ exports.ControllerResult = {
         try {
             const tipe = req.query.tipe;
             let result = '';
-            const matrix = yield matrix_1.ModelMatrix.findAll();
+            const rawMatrix = yield matrix_1.ModelMatrix.findAll();
+            console.log('rawMatrix', rawMatrix);
+            const matrix = rawMatrix.map((item) => (Object.assign(Object.assign({}, item), { nilai: parseFloat(item.nilai) })));
+            console.log('matrix', matrix);
             const kriteria = yield ktriteria_1.ModelKriteria.findAll();
             const alternatif = yield alternatif_1.ModelAlternatif.findAll();
             const data = (0, helpers_1.groupByKriteria)(matrix, kriteria);

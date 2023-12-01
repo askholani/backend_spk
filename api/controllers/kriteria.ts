@@ -6,7 +6,7 @@ export const ControllerKriteria = {
     const { nama, bobot, jenis } = req.body
     const data = {
       nama,
-      bobot: JSON.parse(bobot),
+      bobot,
       jenis: jenis === 'benefit' ? true : false,
     }
     try {
@@ -38,11 +38,13 @@ export const ControllerKriteria = {
   update: async (req: any, res: any) => {
     try {
       const { jenis, bobot, nama } = req.body
+      console.log('req.body', req.body)
       const value = {
         nama,
         jenis: jenis === 'benefit' ? true : false,
-        bobot: parseInt(bobot),
+        bobot,
       }
+      console.log('value', value)
 
       const result = await ModelKriteria.update(req.params.id, value)
 

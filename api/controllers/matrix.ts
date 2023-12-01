@@ -7,10 +7,11 @@ export const ControllerMatrix = {
   create: async (req: any, res: any) => {
     try {
       const { id_alternatif, id_kriteria, nilai } = req.body
+      console.log('req.body', req.body)
       const data = {
         id_alternatif,
         id_kriteria,
-        nilai: parseInt(nilai),
+        nilai,
       }
 
       const matrix = await ModelMatrix.findByKriteriaAlternatif(
@@ -40,8 +41,6 @@ export const ControllerMatrix = {
       const kriteria = await ModelKriteria.findAll()
       const alternatif = await ModelAlternatif.findAll()
       const result = groupByAlternatif(matrix, kriteria, alternatif)
-
-      // console.log('matrix', matrix)
 
       res.status(200).json(result)
     } catch (error) {
@@ -87,8 +86,10 @@ export const ControllerMatrix = {
       const data = {
         id_alternatif: id_alternatif,
         id_kriteria: id_kriteria,
-        nilai: parseInt(nilai),
+        nilai,
       }
+
+      console.log('data', data)
 
       const result = await ModelMatrix.update(id, data)
       res.status(200).json(result)

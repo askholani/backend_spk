@@ -3,7 +3,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// mengakses basis data melalui Prisma.
 generator client {
   provider = "prisma-client-js"
 }
@@ -16,7 +15,7 @@ model alternatif {
 model kriteria {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   nama     String
-  bobot Int
+  bobot String
   jenis Boolean
 }
 
@@ -24,7 +23,7 @@ model matrix {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
   id_kriteria String
   id_alternatif String
-  nilai Int
+  nilai String
 }
 
 model rentang_skor_kriteria {

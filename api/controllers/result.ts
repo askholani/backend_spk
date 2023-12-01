@@ -18,7 +18,13 @@ export const ControllerResult = {
       const tipe = req.query.tipe
       let result: any = ''
 
-      const matrix = await ModelMatrix.findAll()
+      const rawMatrix = await ModelMatrix.findAll()
+      console.log('rawMatrix', rawMatrix)
+      const matrix = rawMatrix.map((item: any) => ({
+        ...item,
+        nilai: parseFloat(item.nilai),
+      }))
+      console.log('matrix', matrix)
       const kriteria = await ModelKriteria.findAll()
       const alternatif = await ModelAlternatif.findAll()
 
