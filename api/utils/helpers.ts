@@ -152,12 +152,9 @@ export function getTertimbang(normalisasi: any, kriteria: any) {
         (itemKri: any) => itemKri.id === item2.id_kriteria,
       )
       const bobot = kriteriaData.bobot
-      // console.log('bobot', typeof bobot)
-      // console.log('nilai', typeof item2.nilai)
-      // console.log('item2.nilai * bobot + bobot', item2.nilai * bobot + bobot)
       return {
         ...item2,
-        nilai: item2.nilai * bobot + bobot,
+        nilai: parseFloat((item2.nilai * bobot + bobot).toFixed(3)),
       }
     })
     // console.log('newData', newData)
