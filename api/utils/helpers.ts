@@ -39,6 +39,7 @@ export function groupByAlternatif(data: any, kriteria: any, alternatif: any) {
 }
 
 export function groupByKriteria(data: any, kriteria: any) {
+  // console.log('kriteria', kriteria)
   const groupedData: any[] = []
 
   data.forEach((item: any) => {
@@ -143,17 +144,23 @@ export function getNormalisasi(data: any, minMax: any) {
 }
 
 export function getTertimbang(normalisasi: any, kriteria: any) {
+  // console.log('getTertimbang kriteria', kriteria)
+  // console.log('getTertimbang normalisasi', normalisasi)
   return normalisasi.map((item: any) => {
     const newData = item.data.map((item2: any) => {
       const kriteriaData = kriteria.find(
         (itemKri: any) => itemKri.id === item2.id_kriteria,
       )
-      const bobot = kriteriaData.bobot / 100
+      const bobot = kriteriaData.bobot
+      // console.log('bobot', typeof bobot)
+      // console.log('nilai', typeof item2.nilai)
+      // console.log('item2.nilai * bobot + bobot', item2.nilai * bobot + bobot)
       return {
         ...item2,
         nilai: item2.nilai * bobot + bobot,
       }
     })
+    // console.log('newData', newData)
     return {
       id_alternatif: item.id_alternatif,
       nama: item.nama_alternatif,
@@ -165,10 +172,11 @@ export function getTertimbang(normalisasi: any, kriteria: any) {
 export function getMatriksBatas(tertimbang: any) {
   const groupedData: any = {}
 
-  tertimbang.forEach((alternatif: any) => {
+  const resultArray = tertimbang.map((alternatif: any) => {
     let count = 0
     let idKriteria = ''
-    alternatif.data.forEach((kriteria: any, index: number) => {
+
+    alternatif.data.forEach((kriteria: any) => {
       count++
       idKriteria = kriteria.id_kriteria
 
@@ -182,29 +190,27 @@ export function getMatriksBatas(tertimbang: any) {
       groupedData[idKriteria].total_nilai *= kriteria.nilai
       groupedData[idKriteria].count++
     })
-  })
 
-  const resultArray = Object.keys(groupedData).map((idKriteria) => ({
-    id_kriteria: idKriteria,
-    nama_kriteria: groupedData[idKriteria].nama_kriteria,
-    total_nilai: parseFloat(
-      Math.pow(
-        groupedData[idKriteria].total_nilai,
-        1 / groupedData[idKriteria].count,
-      ).toFixed(3),
-    ),
-    count: groupedData[idKriteria].count,
-  }))
+    return {
+      id_kriteria: idKriteria,
+      nama_kriteria: groupedData[idKriteria].nama_kriteria,
+      total_nilai: parseFloat(
+        Math.pow(
+          groupedData[idKriteria].total_nilai,
+          1 / groupedData[idKriteria].count,
+        ).toFixed(3),
+      ),
+      count: groupedData[idKriteria].count,
+    }
+  })
 
   return resultArray
 }
 
 export function getAlternatif(data1: any, data2: any) {
-  const hasilUpdate: any = []
-
-  data1.forEach((alternatif: any) => {
+  const hasilUpdate: any[] = data1.map((alternatif: any) => {
     const alternatifBaru = { ...alternatif }
-    alternatifBaru.data.forEach((kriteria: any) => {
+    alternatifBaru.data = alternatifBaru.data.map((kriteria: any) => {
       const totalKriteria = data2.find(
         (total: any) => total.id_kriteria === kriteria.id_kriteria,
       )
@@ -214,28 +220,28 @@ export function getAlternatif(data1: any, data2: any) {
           (kriteria.nilai - totalKriteria.total_nilai).toFixed(3),
         )
       }
+
+      return kriteria
     })
 
-    hasilUpdate.push(alternatifBaru)
+    return alternatifBaru
   })
 
   return hasilUpdate
 }
 
 export function getTotalKriteria(matrixAlternatif: any) {
-  const hasilHitung: any = []
-
-  matrixAlternatif.forEach((alternatif: any) => {
+  const hasilHitung: any = matrixAlternatif.map((alternatif: any) => {
     const totalNilai = alternatif.data.reduce(
       (total: any, kriteria: any) => total + kriteria.nilai,
       0,
     )
 
-    hasilHitung.push({
+    return {
       id_alternatif: alternatif.id_alternatif,
       nama: alternatif.nama,
       total_nilai: parseFloat(totalNilai.toFixed(3)),
-    })
+    }
   })
 
   return hasilHitung

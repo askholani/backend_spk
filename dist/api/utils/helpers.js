@@ -33,6 +33,7 @@ function groupByAlternatif(data, kriteria, alternatif) {
 }
 exports.groupByAlternatif = groupByAlternatif;
 function groupByKriteria(data, kriteria) {
+    // console.log('kriteria', kriteria)
     const groupedData = [];
     data.forEach((item) => {
         const idKriteria = item.id_kriteria;
@@ -106,12 +107,18 @@ function getNormalisasi(data, minMax) {
 }
 exports.getNormalisasi = getNormalisasi;
 function getTertimbang(normalisasi, kriteria) {
+    // console.log('getTertimbang kriteria', kriteria)
+    // console.log('getTertimbang normalisasi', normalisasi)
     return normalisasi.map((item) => {
         const newData = item.data.map((item2) => {
             const kriteriaData = kriteria.find((itemKri) => itemKri.id === item2.id_kriteria);
-            const bobot = kriteriaData.bobot / 100;
+            const bobot = kriteriaData.bobot;
+            // console.log('bobot', typeof bobot)
+            // console.log('nilai', typeof item2.nilai)
+            // console.log('item2.nilai * bobot + bobot', item2.nilai * bobot + bobot)
             return Object.assign(Object.assign({}, item2), { nilai: item2.nilai * bobot + bobot });
         });
+        // console.log('newData', newData)
         return {
             id_alternatif: item.id_alternatif,
             nama: item.nama_alternatif,
@@ -122,10 +129,10 @@ function getTertimbang(normalisasi, kriteria) {
 exports.getTertimbang = getTertimbang;
 function getMatriksBatas(tertimbang) {
     const groupedData = {};
-    tertimbang.forEach((alternatif) => {
+    const resultArray = tertimbang.map((alternatif) => {
         let count = 0;
         let idKriteria = '';
-        alternatif.data.forEach((kriteria, index) => {
+        alternatif.data.forEach((kriteria) => {
             count++;
             idKriteria = kriteria.id_kriteria;
             if (!groupedData[idKriteria]) {
@@ -138,40 +145,39 @@ function getMatriksBatas(tertimbang) {
             groupedData[idKriteria].total_nilai *= kriteria.nilai;
             groupedData[idKriteria].count++;
         });
+        return {
+            id_kriteria: idKriteria,
+            nama_kriteria: groupedData[idKriteria].nama_kriteria,
+            total_nilai: parseFloat(Math.pow(groupedData[idKriteria].total_nilai, 1 / groupedData[idKriteria].count).toFixed(3)),
+            count: groupedData[idKriteria].count,
+        };
     });
-    const resultArray = Object.keys(groupedData).map((idKriteria) => ({
-        id_kriteria: idKriteria,
-        nama_kriteria: groupedData[idKriteria].nama_kriteria,
-        total_nilai: parseFloat(Math.pow(groupedData[idKriteria].total_nilai, 1 / groupedData[idKriteria].count).toFixed(3)),
-        count: groupedData[idKriteria].count,
-    }));
     return resultArray;
 }
 exports.getMatriksBatas = getMatriksBatas;
 function getAlternatif(data1, data2) {
-    const hasilUpdate = [];
-    data1.forEach((alternatif) => {
+    const hasilUpdate = data1.map((alternatif) => {
         const alternatifBaru = Object.assign({}, alternatif);
-        alternatifBaru.data.forEach((kriteria) => {
+        alternatifBaru.data = alternatifBaru.data.map((kriteria) => {
             const totalKriteria = data2.find((total) => total.id_kriteria === kriteria.id_kriteria);
             if (totalKriteria) {
                 kriteria.nilai = parseFloat((kriteria.nilai - totalKriteria.total_nilai).toFixed(3));
             }
+            return kriteria;
         });
-        hasilUpdate.push(alternatifBaru);
+        return alternatifBaru;
     });
     return hasilUpdate;
 }
 exports.getAlternatif = getAlternatif;
 function getTotalKriteria(matrixAlternatif) {
-    const hasilHitung = [];
-    matrixAlternatif.forEach((alternatif) => {
+    const hasilHitung = matrixAlternatif.map((alternatif) => {
         const totalNilai = alternatif.data.reduce((total, kriteria) => total + kriteria.nilai, 0);
-        hasilHitung.push({
+        return {
             id_alternatif: alternatif.id_alternatif,
             nama: alternatif.nama,
             total_nilai: parseFloat(totalNilai.toFixed(3)),
-        });
+        };
     });
     return hasilHitung;
 }
