@@ -144,8 +144,6 @@ export function getNormalisasi(data: any, minMax: any) {
 }
 
 export function getTertimbang(normalisasi: any, kriteria: any) {
-  // console.log('getTertimbang kriteria', kriteria)
-  // console.log('getTertimbang normalisasi', normalisasi)
   return normalisasi.map((item: any) => {
     const newData = item.data.map((item2: any) => {
       const kriteriaData = kriteria.find(
@@ -157,7 +155,7 @@ export function getTertimbang(normalisasi: any, kriteria: any) {
         nilai: parseFloat((item2.nilai * bobot + bobot).toFixed(3)),
       }
     })
-    // console.log('newData', newData)
+    // console.log('newData',newData)
     return {
       id_alternatif: item.id_alternatif,
       nama: item.nama_alternatif,
@@ -167,64 +165,88 @@ export function getTertimbang(normalisasi: any, kriteria: any) {
 }
 
 export function getMatriksBatas(tertimbang: any) {
-  const groupedData: any = {}
+  const totalPenjumlahan: any = {}
 
-  const resultArray = tertimbang.map((alternatif: any) => {
-    let count = 0
-    let idKriteria = ''
+  // Iterasi melalui setiap elemen data
+  tertimbang.forEach((alternatif: any) => {
+    alternatif.data.forEach((kriteria: any, index: number) => {
+      // Mendapatkan id_kriteria dan nilai dari setiap elemen data
+      const { id_kriteria, nilai } = kriteria
 
-    alternatif.data.forEach((kriteria: any) => {
-      count++
-      idKriteria = kriteria.id_kriteria
-
-      if (!groupedData[idKriteria]) {
-        groupedData[idKriteria] = {
+      // Memeriksa apakah id_kriteria sudah ada di objek totalPenjumlahan
+      if (!totalPenjumlahan[id_kriteria]) {
+        // Jika belum ada, inisialisasi dengan nilai dari data pertama
+        totalPenjumlahan[id_kriteria] = {
+          id_kriteria,
           nama_kriteria: kriteria.nama_kriteria,
-          total_nilai: 1,
-          count: 1,
+          total_penjumlahan: 1,
         }
       }
-      groupedData[idKriteria].total_nilai *= kriteria.nilai
-      groupedData[idKriteria].count++
-    })
 
-    return {
-      id_kriteria: idKriteria,
-      nama_kriteria: groupedData[idKriteria].nama_kriteria,
-      total_nilai: parseFloat(
-        Math.pow(
-          groupedData[idKriteria].total_nilai,
-          1 / groupedData[idKriteria].count,
-        ).toFixed(3),
-      ),
-      count: groupedData[idKriteria].count,
-    }
+      // Menambahkan nilai ke total_penjumlahan
+      totalPenjumlahan[id_kriteria].total_penjumlahan *= nilai
+    })
   })
 
-  return resultArray
+  // Mengonversi objek menjadi array (jika diperlukan)
+  const hasilPenjumlahanArray = Object.values(totalPenjumlahan)
+  hasilPenjumlahanArray.forEach((item: any) => {
+    item.total_penjumlahan = parseFloat(
+      Math.pow(item.total_penjumlahan, 1 / tertimbang.length).toFixed(3),
+    )
+  })
+  return hasilPenjumlahanArray
 }
 
+// export function getAlternatif(data1: any, data2: any) {
+//   console.log('tertimbang', data1)
+//   console.log('batas', data2)
+//   const hasilUpdate: any[] = data1.map((alternatif: any) => {
+//     const alternatifBaru = { ...alternatif }
+//     alternatifBaru.data = alternatifBaru.data.map((kriteria: any) => {
+//       const totalKriteria = data2.find(
+//         (total: any) => total.id_kriteria === kriteria.id_kriteria,
+//       )
+
+//       if (totalKriteria) {
+//         kriteria.nilai = parseFloat(
+//           (kriteria.nilai - totalKriteria.total_nilai).toFixed(3),
+//         )
+//       }
+
+//       return kriteria
+//     })
+
+//     return alternatifBaru
+//   })
+
+//   return hasilUpdate
+// }
+
 export function getAlternatif(data1: any, data2: any) {
-  const hasilUpdate: any[] = data1.map((alternatif: any) => {
-    const alternatifBaru = { ...alternatif }
-    alternatifBaru.data = alternatifBaru.data.map((kriteria: any) => {
-      const totalKriteria = data2.find(
-        (total: any) => total.id_kriteria === kriteria.id_kriteria,
-      )
-
-      if (totalKriteria) {
-        kriteria.nilai = parseFloat(
-          (kriteria.nilai - totalKriteria.total_nilai).toFixed(3),
+  return data1.map((item1: any) => {
+    const newData = {
+      ...item1,
+      data: item1.data.map((item2: any) => {
+        const kriteria = data2.find(
+          (item3: any) => item3.id_kriteria === item2.id_kriteria,
         )
-      }
 
-      return kriteria
-    })
+        if (kriteria) {
+          return {
+            ...item2,
+            nilai: parseFloat(
+              (item2.nilai - kriteria.total_penjumlahan).toFixed(3),
+            ),
+          }
+        }
 
-    return alternatifBaru
+        return item2
+      }),
+    }
+
+    return newData
   })
-
-  return hasilUpdate
 }
 
 export function getTotalKriteria(matrixAlternatif: any) {

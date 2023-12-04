@@ -23,19 +23,16 @@ export const ControllerResult = {
         ...item,
         nilai: parseFloat(item.nilai),
       }))
-      // console.log('matrix', matrix)
       const rawKriteria = await ModelKriteria.findAll()
       // console.log('rawKriteria', rawKriteria)
       const kriteria = rawKriteria.map((item: any) => ({
         ...item,
         bobot: parseFloat(item.bobot),
       }))
-      // console.log('kriteria', kriteria)
-      // console.log('kriteria', kriteria)
+
       const alternatif = await ModelAlternatif.findAll()
 
       const data = groupByKriteria(matrix, kriteria)
-
       const minMax = getMinMaxValues(data, kriteria)
       const dataAlternatif = groupByAlternatif(matrix, kriteria, alternatif)
 
@@ -44,39 +41,32 @@ export const ControllerResult = {
 
       // matrix tertimbang
       const tertimbang = getTertimbang(normalisasi, kriteria)
-      // console.log('tertimbang1', tertimbang[0].data)
 
+      // matrix batas
       const batas = getMatriksBatas(tertimbang)
 
       // matrix jarak alternatif
-      const matrixAlternatif = getAlternatif(tertimbang, batas)
+      const tertimbangAl = getTertimbang(normalisasi, kriteria)
+      const matrixAlternatif = getAlternatif(tertimbangAl, batas)
 
       // matrix hasil
       const matrixTotalKriteria = getTotalKriteria(matrixAlternatif)
 
-      console.log('tertimbang2', tertimbang[0].data)
-
       switch (tipe) {
         case 'normalisasi':
           result = normalisasi
-          console.log('normalisasi', result)
           break
         case 'tertimbang':
           result = tertimbang
-          // console.log('tertimbang', tertimbang[0].data)
-          // console.log('tertimbang result', result[0].data)
           break
         case 'batas':
           result = batas
-          console.log('batas', result)
           break
         case 'alternatif':
           result = matrixAlternatif
-          console.log('aterlantif', result)
           break
         case 'hasil':
           result = matrixTotalKriteria
-          console.log('hasil', result)
           break
       }
 

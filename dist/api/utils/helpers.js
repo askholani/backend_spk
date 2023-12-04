@@ -107,18 +107,13 @@ function getNormalisasi(data, minMax) {
 }
 exports.getNormalisasi = getNormalisasi;
 function getTertimbang(normalisasi, kriteria) {
-    // console.log('getTertimbang kriteria', kriteria)
-    // console.log('getTertimbang normalisasi', normalisasi)
     return normalisasi.map((item) => {
         const newData = item.data.map((item2) => {
             const kriteriaData = kriteria.find((itemKri) => itemKri.id === item2.id_kriteria);
             const bobot = kriteriaData.bobot;
-            // console.log('bobot', typeof bobot)
-            // console.log('nilai', typeof item2.nilai)
-            // console.log('item2.nilai * bobot + bobot', item2.nilai * bobot + bobot)
-            return Object.assign(Object.assign({}, item2), { nilai: item2.nilai * bobot + bobot });
+            return Object.assign(Object.assign({}, item2), { nilai: parseFloat((item2.nilai * bobot + bobot).toFixed(3)) });
         });
-        // console.log('newData', newData)
+        // console.log('newData',newData)
         return {
             id_alternatif: item.id_alternatif,
             nama: item.nama_alternatif,
@@ -128,46 +123,64 @@ function getTertimbang(normalisasi, kriteria) {
 }
 exports.getTertimbang = getTertimbang;
 function getMatriksBatas(tertimbang) {
-    const groupedData = {};
-    const resultArray = tertimbang.map((alternatif) => {
-        let count = 0;
-        let idKriteria = '';
-        alternatif.data.forEach((kriteria) => {
-            count++;
-            idKriteria = kriteria.id_kriteria;
-            if (!groupedData[idKriteria]) {
-                groupedData[idKriteria] = {
+    const totalPenjumlahan = {};
+    // Iterasi melalui setiap elemen data
+    tertimbang.forEach((alternatif) => {
+        alternatif.data.forEach((kriteria, index) => {
+            // Mendapatkan id_kriteria dan nilai dari setiap elemen data
+            const { id_kriteria, nilai } = kriteria;
+            // Memeriksa apakah id_kriteria sudah ada di objek totalPenjumlahan
+            if (!totalPenjumlahan[id_kriteria]) {
+                // Jika belum ada, inisialisasi dengan nilai dari data pertama
+                totalPenjumlahan[id_kriteria] = {
+                    id_kriteria,
                     nama_kriteria: kriteria.nama_kriteria,
-                    total_nilai: 1,
-                    count: 1,
+                    total_penjumlahan: 1,
                 };
             }
-            groupedData[idKriteria].total_nilai *= kriteria.nilai;
-            groupedData[idKriteria].count++;
+            // Menambahkan nilai ke total_penjumlahan
+            totalPenjumlahan[id_kriteria].total_penjumlahan *= nilai;
         });
-        return {
-            id_kriteria: idKriteria,
-            nama_kriteria: groupedData[idKriteria].nama_kriteria,
-            total_nilai: parseFloat(Math.pow(groupedData[idKriteria].total_nilai, 1 / groupedData[idKriteria].count).toFixed(3)),
-            count: groupedData[idKriteria].count,
-        };
     });
-    return resultArray;
+    // Mengonversi objek menjadi array (jika diperlukan)
+    const hasilPenjumlahanArray = Object.values(totalPenjumlahan);
+    hasilPenjumlahanArray.forEach((item) => {
+        item.total_penjumlahan = parseFloat(Math.pow(item.total_penjumlahan, 1 / tertimbang.length).toFixed(3));
+    });
+    return hasilPenjumlahanArray;
 }
 exports.getMatriksBatas = getMatriksBatas;
+// export function getAlternatif(data1: any, data2: any) {
+//   console.log('tertimbang', data1)
+//   console.log('batas', data2)
+//   const hasilUpdate: any[] = data1.map((alternatif: any) => {
+//     const alternatifBaru = { ...alternatif }
+//     alternatifBaru.data = alternatifBaru.data.map((kriteria: any) => {
+//       const totalKriteria = data2.find(
+//         (total: any) => total.id_kriteria === kriteria.id_kriteria,
+//       )
+//       if (totalKriteria) {
+//         kriteria.nilai = parseFloat(
+//           (kriteria.nilai - totalKriteria.total_nilai).toFixed(3),
+//         )
+//       }
+//       return kriteria
+//     })
+//     return alternatifBaru
+//   })
+//   return hasilUpdate
+// }
 function getAlternatif(data1, data2) {
-    const hasilUpdate = data1.map((alternatif) => {
-        const alternatifBaru = Object.assign({}, alternatif);
-        alternatifBaru.data = alternatifBaru.data.map((kriteria) => {
-            const totalKriteria = data2.find((total) => total.id_kriteria === kriteria.id_kriteria);
-            if (totalKriteria) {
-                kriteria.nilai = parseFloat((kriteria.nilai - totalKriteria.total_nilai).toFixed(3));
-            }
-            return kriteria;
-        });
-        return alternatifBaru;
+    return data1.map((item1) => {
+        const newData = Object.assign(Object.assign({}, item1), { data: item1.data.map((item2) => {
+                const kriteria = data2.find((item3) => item3.id_kriteria === item2.id_kriteria);
+                if (kriteria) {
+                    return Object.assign(Object.assign({}, item2), { nilai: parseFloat((item2.nilai - kriteria.total_penjumlahan).toFixed(3)) });
+                }
+                return item2;
+            }) });
+        return newData;
     });
-    return hasilUpdate;
 }
 exports.getAlternatif = getAlternatif;
 function getTotalKriteria(matrixAlternatif) {
